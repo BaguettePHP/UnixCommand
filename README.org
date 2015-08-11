@@ -11,6 +11,7 @@ UNIX-like commands implementation in PHP.
 - =uniq=
 - =seq=
 - =whoami=
+- =cp=
 
 ** Copyright
 
