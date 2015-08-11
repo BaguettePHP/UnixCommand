@@ -6,6 +6,7 @@ UNIX-like commands implementation in PHP.
 
 - =echo=
 - =cat=
+- =pwd=
 
 ** Copyright
 
