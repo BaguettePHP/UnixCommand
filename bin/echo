@@ -1,0 +1,34 @@
+#!/usr/bin/env php
+<?php
+namespace zonuexe\UnixCommand;
+
+/**
+ * ECHO command
+ *
+ * @author    USAMI KENTA <tadsan@zonu.me>
+ * @license   http://www.apache.org/licenses/LICENSE-2.0 Apache-2.0
+ * @copyright 2015 USAMI Kenta
+ */
+
+if (realpath($_SERVER['SCRIPT_FILENAME']) == realpath(__FILE__)) {
+    $argv = isset($_SERVER['argv']) ? $_SERVER['argv'] : [];
+    array_shift($argv);
+
+    exit(_echo($argv));
+}
+
+/**
+ * @return int UNIX status code
+ */
+function _echo(array $argv)
+{
+    echo array_shift($argv);
+
+    while ($argv) {
+        echo ' ';
+        echo array_shift($argv);
+    }
+    echo PHP_EOL;
+
+    return 0;
+}

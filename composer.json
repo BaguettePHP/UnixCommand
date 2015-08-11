@@ -1,0 +1,13 @@
+{
+    "name": "zonuexe/tenarai-commands",
+    "description": "UNIX-like commands implementation in PHP.",
+    "type": "library",
+    "license": "Apache-2.0",
+    "authors": [
+        {
+            "name": "USAMI Kenta",
+            "email": "tadsan@zonu.me"
+        }
+    ],
+    "require": {}
+}
