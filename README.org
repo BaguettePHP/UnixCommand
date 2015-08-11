@@ -9,6 +9,7 @@ UNIX-like commands implementation in PHP.
 - =pwd=
 - =printf=
 - =uniq=
+- =seq=
 
 ** Copyright
 
