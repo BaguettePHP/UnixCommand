@@ -5,6 +5,7 @@ UNIX-like commands implementation in PHP.
 ** Commands
 
 - =echo=
+- =cat=
 
 ** Copyright
 
