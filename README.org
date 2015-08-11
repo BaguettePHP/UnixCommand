@@ -8,6 +8,7 @@ UNIX-like commands implementation in PHP.
 - =cat=
 - =pwd=
 - =printf=
+- =uniq=
 
 ** Copyright
 
