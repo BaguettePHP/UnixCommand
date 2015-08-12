@@ -52,12 +52,40 @@ function _echo(array $argv)
         '\z' => "\z",
     ];
 
-    echo strtr(array_shift($argv), $tr_table);
+    $last_newline = true;
+    $first = array_shift($argv);
+
+    if (strpos($first, '-n') === 0) {
+        $last_newline = false;
+        $first = array_shift($argv);
+    }
+
+
+    $printline = function ($l) use ($tr_table) {
+        $terminate = false;
+        $line = strtr($l, $tr_table);
+        if (strpos($line, "\c") !== false) {
+            $terminate = true;
+            list($line, $_) = explode("\c", $line, 2);
+        }
+        echo $line;
+
+        return $terminate;
+    };
+
+    $printline($first);
+
     while ($argv) {
         echo ' ';
-        echo strtr(array_shift($argv), $tr_table);
+
+        if ($printline(array_shift($argv))) {
+            return 0;
+        }
     }
-    echo PHP_EOL;
+
+    if ($last_newline) {
+        echo PHP_EOL;
+    }
 
     return 0;
 }
