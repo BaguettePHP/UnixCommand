@@ -40,6 +40,19 @@ function seq(array $argv)
         return 1;
     }
 
+    if ($step == 0) {
+        $message = 'seq: zero decrement';
+    } elseif (($start < $last) && ($step < 0)) {
+        $message = 'seq: needs positive increment';
+    } elseif (($start > $last) && ($step > 0)) {
+        $message = 'seq: needs negative decrement';
+    }
+
+    if (isset($message)) {
+        fwrite(STDERR, $message . PHP_EOL);
+        return 1;
+    }
+
     foreach (range($start, $last, $step) as $n) {
         echo $n, PHP_EOL;
     }
