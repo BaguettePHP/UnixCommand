@@ -67,17 +67,18 @@ function cp(array $argv)
         }
 
         if ($is_dir) {
-            $new = $dest . '/' . basename($f);
-            file_put_contents($new, file_get_contents($f));
+            $new_file = $dest . '/' . basename($f);
         } else {
-            try {
-                copy($f, $dest);
-            } catch (\ErrorException $e) {
-                $message = preg_replace('@\Acopy@', 'cp', $e->getMessage());
-                fwrite(STDERR, $message . PHP_EOL);
-                $failed = true;
-                continue;
-            }
+            $new_file = $dest;
+        }
+
+        try {
+            copy($f, $new_file);
+        } catch (\ErrorException $e) {
+            $message = preg_replace('@\Acopy@', 'cp', $e->getMessage());
+            fwrite(STDERR, $message . PHP_EOL);
+            $failed = true;
+            continue;
         }
     }
 
