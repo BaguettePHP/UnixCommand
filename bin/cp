@@ -60,16 +60,20 @@ function cp(array $argv)
             $message = "cp: '{$f}' and '{$f}' are the same file";
         }
 
-        if (isset($message)) {
-            fwrite(STDERR, $message . PHP_EOL);
-            $failed = true;
-            continue;
-        }
-
         if ($is_dir) {
             $new_file = $dest . '/' . basename($f);
         } else {
             $new_file = $dest;
+        }
+
+        if (!is_writable($dest)) {
+            $message = "cp: cannot create regular file '{$new_file}': Permission denied";
+        }
+
+        if (isset($message)) {
+            fwrite(STDERR, $message . PHP_EOL);
+            $failed = true;
+            continue;
         }
 
         try {
