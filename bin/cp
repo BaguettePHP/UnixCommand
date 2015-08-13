@@ -1,6 +1,7 @@
 #!/usr/bin/env php
 <?php
 namespace zonuexe\UnixCommand;
+require_once dirname(__DIR__) . '/bootstrap.php';
 
 /**
  * CP command
@@ -69,7 +70,14 @@ function cp(array $argv)
             $new = $dest . '/' . basename($f);
             file_put_contents($new, file_get_contents($f));
         } else {
-            copy($f, $dest);
+            try {
+                copy($f, $dest);
+            } catch (\ErrorException $e) {
+                $message = preg_replace('@\Acopy@', 'cp', $e->getMessage());
+                fwrite(STDERR, $message . PHP_EOL);
+                $failed = true;
+                continue;
+            }
         }
     }
 
