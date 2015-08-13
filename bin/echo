@@ -55,7 +55,7 @@ function _echo(array $argv)
     $last_newline = true;
     $first = array_shift($argv);
 
-    if (strpos($first, '-n') === 0) {
+    if ($first === '-n') {
         $last_newline = false;
         $first = array_shift($argv);
     }
