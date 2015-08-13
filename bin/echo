@@ -73,7 +73,9 @@ function _echo(array $argv)
         return $terminate;
     };
 
-    $printline($first);
+    if ($printline($first)) {
+        return 0;
+    }
 
     while ($argv) {
         echo ' ';
