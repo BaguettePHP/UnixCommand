@@ -1,5 +1,5 @@
 {
-    "name": "zonuexe/tenarai-commands",
+    "name": "Baguette/UnixCommand",
     "description": "UNIX-like commands implementation in PHP.",
     "type": "library",
     "license": "Apache-2.0",
@@ -9,5 +9,7 @@
             "email": "tadsan@zonu.me"
         }
     ],
-    "require": {}
+    "autoload": {
+        "files": ["functions.php"]
+    }
 }
