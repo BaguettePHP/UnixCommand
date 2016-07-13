@@ -1,4 +1,4 @@
-* PHP Tenarai Commands!
+* Bagunix - Baguette Unix Commands!
 
 UNIX-like commands implementation in PHP.
 

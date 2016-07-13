@@ -1,0 +1,28 @@
+#!/usr/bin/env php
+<?php
+
+/**
+ * Command
+ *
+ * @author    USAMI KENTA <tadsan@zonu.me>
+ * @license   http://www.apache.org/licenses/LICENSE-2.0 Apache-2.0
+ * @copyright 2015 USAMI Kenta
+ */
+
+namespace Baguette\UnixCommand;
+
+require_once __DIR__ . '/../functions.php';
+
+$argv = isset($_SERVER['argv']) ? $_SERVER['argv'] : [$_SERVER['SCRIPT_FILENAME']];
+
+if (pathinfo($argv[0], PATHINFO_FILENAME) === pathinfo(__FILE__, PATHINFO_FILENAME)) {
+    array_shift($argv);
+}
+
+$command = pathinfo(array_shift($argv), PATHINFO_FILENAME);
+if ($command === 'echo') {
+    $command = 'echo_';
+}
+$funcion = sprintf('\%s\%s', __NAMESPACE__, $command);
+
+exit($funcion($argv));
