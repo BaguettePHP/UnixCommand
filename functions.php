@@ -141,7 +141,7 @@ function cp(array $argv, $stdin = STDIN, $stdout = STDOUT, $stderr = STDERR)
  * @param  resource $stderr
  * @return int UNIX status code
  */
-function _echo(array $argv, $stdin = STDIN, $stdout = STDOUT, $stderr = STDERR)
+function echo_(array $argv, $stdin = STDIN, $stdout = STDOUT, $stderr = STDERR)
 {
     static $tr_table = [
         '\\\\' => '\\',
