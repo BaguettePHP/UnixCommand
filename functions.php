@@ -247,7 +247,7 @@ function printf(array $argv)
         '\z' => "\z",
     ]));
 
-    call_user_func_array('\printf', $argv);
+    \vfprintf(STDIN, $format, $argv);
 
     return 0;
 }
