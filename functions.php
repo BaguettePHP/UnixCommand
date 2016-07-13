@@ -12,26 +12,29 @@ namespace zonuexe\UnixCommand;
 
 /**
  * @param  string[] $argv
+ * @param  resource $stdin
+ * @param  resource $stdout
+ * @param  resource $stderr
  * @return int UNIX status code
  */
-function cat(array $argv)
+function cat(array $argv, $stdin = STDIN, $stdout = STDOUT, $stderr = STDERR)
 {
     $files  = $argv ?: ['-'];
     $failed = false;
-    $stdin  = null;
+    $stdin_content = null;
 
     foreach ($files as $f) {
         $file = null;
         if ($f === '-') {
-            if ($stdin !== null) {
-                echo $stdin;
+            if ($stdin_content !== null) {
+                fwrite($stdout, $stdin_content);
                 continue;
             }
 
-            $file = STDIN;
+            $file = $stdin;
         } elseif (!is_file($f)) {
             $failed = true;
-            fwrite(STDERR, "cat: ${f}: No such file or directory" . PHP_EOL);
+            fwrite($stderr, "cat: ${f}: No such file or directory" . PHP_EOL);
             continue;
         } else {
             $file = fopen($f, 'r');
@@ -43,10 +46,10 @@ function cat(array $argv)
                 break;
             }
             if ($f === '-') {
-                $stdin .= $data;
+                $stdin_content .= $data;
             }
 
-            echo $data;
+            fwrite($stdout, $data);
         }
         fclose($file);
     }
@@ -56,15 +59,18 @@ function cat(array $argv)
 
 /**
  * @param  string[] $argv
+ * @param  resource $stdin
+ * @param  resource $stdout
+ * @param  resource $stderr
  * @return int UNIX status code
  */
-function cp(array $argv)
+function cp(array $argv, $stdin = STDIN, $stdout = STDOUT, $stderr = STDERR)
 {
     $failed = false;
 
     $len = count($argv);
     if ($len === 0) {
-        fwrite(STDERR, 'cp: missing file operand' . PHP_EOL);
+        fwrite($stderr, 'cp: missing file operand' . PHP_EOL);
         return 1;
     }
 
@@ -73,13 +79,13 @@ function cp(array $argv)
 
     if ($len === 1) {
         $message = "cp: missing destination file operand after '{$dest}'";
-        fwrite(STDERR, $message . PHP_EOL);
+        fwrite($stderr, $message . PHP_EOL);
         return 1;
     }
 
     if (count($argv) > 1 && !$is_dir) {
         $message = "cp: target '{$dest}' is not a directory";
-        fwrite(STDERR, $message . PHP_EOL);
+        fwrite($stderr, $message . PHP_EOL);
         return 1;
     }
 
@@ -110,7 +116,7 @@ function cp(array $argv)
         }
 
         if (isset($message)) {
-            fwrite(STDERR, $message . PHP_EOL);
+            fwrite($stderr, $message . PHP_EOL);
             $failed = true;
             continue;
         }
@@ -119,7 +125,7 @@ function cp(array $argv)
             copy($f, $new_file);
         } catch (\ErrorException $e) {
             $message = preg_replace('@\Acopy@', 'cp', $e->getMessage());
-            fwrite(STDERR, $message . PHP_EOL);
+            fwrite($stderr, $message . PHP_EOL);
             $failed = true;
             continue;
         }
@@ -130,9 +136,12 @@ function cp(array $argv)
 
 /**
  * @param  string[] $argv
+ * @param  resource $stdin
+ * @param  resource $stdout
+ * @param  resource $stderr
  * @return int UNIX status code
  */
-function _echo(array $argv)
+function _echo(array $argv, $stdin = STDIN, $stdout = STDOUT, $stderr = STDERR)
 {
     static $tr_table = [
         '\\\\' => '\\',
@@ -173,14 +182,14 @@ function _echo(array $argv)
     }
 
 
-    $printline = function ($l) use ($tr_table) {
+    $printline = function ($l) use ($tr_table, $stdout) {
         $terminate = false;
         $line = strtr($l, $tr_table);
         if (strpos($line, "\c") !== false) {
             $terminate = true;
             list($line, $_) = explode("\c", $line, 2);
         }
-        echo $line;
+        fwrite($stdout, $line);
 
         return $terminate;
     };
@@ -190,7 +199,7 @@ function _echo(array $argv)
     }
 
     while ($argv) {
-        echo ' ';
+        fwrite($stdout, ' ');
 
         if ($printline(array_shift($argv))) {
             return 0;
@@ -198,7 +207,7 @@ function _echo(array $argv)
     }
 
     if ($last_newline) {
-        echo PHP_EOL;
+        fwrite($stdout, PHP_EOL);
     }
 
     return 0;
@@ -206,14 +215,17 @@ function _echo(array $argv)
 
 /**
  * @param  string[] $argv
+ * @param  resource $stdin
+ * @param  resource $stdout
+ * @param  resource $stderr
  * @return int UNIX status code
  */
-function printf(array $argv)
+function printf(array $argv, $stdin = STDIN, $stdout = STDOUT, $stderr = STDERR)
 {
     $format = array_shift($argv);
 
     if ($format === null || strlen($format) < 1) {
-        fwrite(STDERR, 'printf: not enough arguments' . PHP_EOL);
+        fwrite($stderr, 'printf: not enough arguments' . PHP_EOL);
         return 1;
     }
 
@@ -247,31 +259,37 @@ function printf(array $argv)
         '\z' => "\z",
     ]));
 
-    \vfprintf(STDIN, $format, $argv);
+    \vfprintf($stdin, $format, $argv);
 
     return 0;
 }
 
 /**
  * @param  string[] $argv
+ * @param  resource $stdin
+ * @param  resource $stdout
+ * @param  resource $stderr
  * @return int UNIX status code
  */
-function pwd(array $argv)
+function pwd(array $argv, $stdin = STDIN, $stdout = STDOUT, $stderr = STDERR)
 {
     $pwd = getenv('PWD');
     if (empty($pwd)) {
         return 1;
     }
 
-    echo $pwd, PHP_EOL;
+    fwrite($stdout, $pwd . PHP_EOL);
     return 0;
 }
 
 /**
  * @param  string[] $argv
+ * @param  resource $stdin
+ * @param  resource $stdout
+ * @param  resource $stderr
  * @return int UNIX status code
  */
-function seq(array $argv)
+function seq(array $argv, $stdin = STDIN, $stdout = STDOUT, $stderr = STDERR)
 {
     $len = count($argv);
 
@@ -300,12 +318,12 @@ function seq(array $argv)
     }
 
     if (isset($message)) {
-        fwrite(STDERR, $message . PHP_EOL);
+        fwrite($stderr, $message . PHP_EOL);
         return 1;
     }
 
     foreach (range($start, $last, $step) as $n) {
-        echo $n, PHP_EOL;
+        fwrite($stdout, $n . PHP_EOL);
     }
 
     return 0;
@@ -313,15 +331,18 @@ function seq(array $argv)
 
 /**
  * @param  string[] $argv
+ * @param  resource $stdin
+ * @param  resource $stdout
+ * @param  resource $stderr
  * @return int UNIX status code
  */
-function whoami(array $argv)
+function whoami(array $argv, $stdin = STDIN, $stdout = STDOUT, $stderr = STDERR)
 {
     $my = posix_getpwuid(posix_geteuid());
     if (empty($my) || !isset($my['name'])) {
         return 1;
     }
 
-    echo $my['name'], PHP_EOL;
+    fwrite($stdout, $my['name'] . PHP_EOL);
     return 0;
 }
