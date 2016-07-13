@@ -103,7 +103,9 @@ function cp(array $argv)
             $new_file = $dest;
         }
 
-        if (!is_writable($dest)) {
+        if (!is_file($new_file)) {
+            touch($new_file);
+        } elseif (!is_writable($dest)) {
             $message = "cp: cannot create regular file '{$new_file}': Permission denied";
         }
 
