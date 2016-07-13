@@ -229,7 +229,7 @@ function printf(array $argv, $stdin = STDIN, $stdout = STDOUT, $stderr = STDERR)
         return 1;
     }
 
-    array_unshift($argv, strtr($format, [
+    $format = strtr($format, [
         '\\\\' => '\\',
         '\a' => "\a",
         '\b' => "\b",
@@ -257,7 +257,7 @@ function printf(array $argv, $stdin = STDIN, $stdout = STDOUT, $stderr = STDERR)
         '\x' => "\x",
         '\y' => "\y",
         '\z' => "\z",
-    ]));
+    ]);
 
     \vfprintf($stdin, $format, $argv);
 
