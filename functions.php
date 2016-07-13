@@ -224,7 +224,7 @@ function printf(array $argv, $stdin = STDIN, $stdout = STDOUT, $stderr = STDERR)
 {
     $format = array_shift($argv);
 
-    if ($format === null || strlen($format) < 1) {
+    if ($format === null) {
         fwrite($stderr, 'printf: not enough arguments' . PHP_EOL);
         return 1;
     }
