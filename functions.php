@@ -8,7 +8,7 @@
  * @copyright 2015 USAMI Kenta
  */
 
-namespace zonuexe\UnixCommand;
+namespace Baguette\UnixCommand;
 
 /**
  * @param  string[] $argv

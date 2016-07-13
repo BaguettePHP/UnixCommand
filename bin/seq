@@ -9,7 +9,7 @@
  * @copyright 2015 USAMI Kenta
  */
 
-namespace zonuexe\UnixCommand;
+namespace namespace \UnixCommand;
 
 require_once __DIR__ . '/../functions.php';
 
