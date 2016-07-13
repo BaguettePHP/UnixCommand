@@ -2,6 +2,16 @@
 
 UNIX-like commands implementation in PHP.
 
+** Installation
+
+#+BEGIN_SRC
+composer require Baguette/UnixCommand
+#+END_SRC
+
+** API
+
+All functions require arguments =(string[] $argv, resource $stdin = STDIN, resource $stdout, resource $stderr)=.
+
 ** Commands
 
 - =echo=
