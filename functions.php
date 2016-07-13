@@ -34,7 +34,7 @@ function cat(array $argv, $stdin = STDIN, $stdout = STDOUT, $stderr = STDERR)
             $file = $stdin;
         } elseif (!is_file($f)) {
             $failed = true;
-            fwrite($stderr, "cat: ${f}: No such file or directory" . PHP_EOL);
+            fwrite($stderr, "cat: {$f}: No such file or directory" . PHP_EOL);
             continue;
         } else {
             $file = fopen($f, 'r');
