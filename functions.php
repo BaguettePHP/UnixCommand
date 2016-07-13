@@ -91,7 +91,7 @@ function cp(array $argv, $stdin = STDIN, $stdout = STDOUT, $stderr = STDERR)
 
     if ($is_dir) {
         $pathinfo = pathinfo($dest);
-        $dest = $pathinfo['dirname'] . '/' . $pathinfo['basename'];
+        $dest = $pathinfo['dirname'] . DIRECTORY_SEPARATOR . $pathinfo['basename'];
     }
 
     foreach ($argv as $f) {
@@ -104,7 +104,7 @@ function cp(array $argv, $stdin = STDIN, $stdout = STDOUT, $stderr = STDERR)
         }
 
         if ($is_dir) {
-            $new_file = $dest . '/' . basename($f);
+            $new_file = $dest . DIRECTORY_SEPARATOR . basename($f);
         } else {
             $new_file = $dest;
         }
