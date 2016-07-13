@@ -1,6 +1,5 @@
 #!/usr/bin/env php
 <?php
-namespace zonuexe\UnixCommand;
 
 /**
  * SEQ command
@@ -10,52 +9,13 @@ namespace zonuexe\UnixCommand;
  * @copyright 2015 USAMI Kenta
  */
 
+namespace zonuexe\UnixCommand;
+
+require_once __DIR__ . '/../functions.php';
+
 if (realpath($_SERVER['SCRIPT_FILENAME']) == realpath(__FILE__)) {
     $argv = isset($_SERVER['argv']) ? $_SERVER['argv'] : [];
     array_shift($argv);
 
     exit(seq($argv));
-}
-
-/**
- * @return int UNIX status code
- */
-function seq(array $argv)
-{
-    $len = count($argv);
-
-    if ($len === 1) {
-        $start = 1;
-        $step  = 1;
-        $last  = array_shift($argv);
-    } elseif ($len === 2) {
-        $start = array_shift($argv);
-        $last  = array_shift($argv);
-        $step  = ($start >= $last) ? -1 : 1;
-    } elseif ($len === 3) {
-        $start = array_shift($argv);
-        $step  = array_shift($argv);
-        $last  = array_shift($argv);
-    } else {
-        return 1;
-    }
-
-    if ($step == 0) {
-        $message = 'seq: zero decrement';
-    } elseif (($start < $last) && ($step < 0)) {
-        $message = 'seq: needs positive increment';
-    } elseif (($start > $last) && ($step > 0)) {
-        $message = 'seq: needs negative decrement';
-    }
-
-    if (isset($message)) {
-        fwrite(STDERR, $message . PHP_EOL);
-        return 1;
-    }
-
-    foreach (range($start, $last, $step) as $n) {
-        echo $n, PHP_EOL;
-    }
-
-    return 0;
 }

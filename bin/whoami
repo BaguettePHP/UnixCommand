@@ -1,6 +1,5 @@
 #!/usr/bin/env php
 <?php
-namespace zonuexe\UnixCommand;
 
 /**
  * WHOAMI command
@@ -10,23 +9,13 @@ namespace zonuexe\UnixCommand;
  * @copyright 2015 USAMI Kenta
  */
 
+namespace zonuexe\UnixCommand;
+
+require_once __DIR__ . '/../functions.php';
+
 if (realpath($_SERVER['SCRIPT_FILENAME']) == realpath(__FILE__)) {
     $argv = isset($_SERVER['argv']) ? $_SERVER['argv'] : [];
     array_shift($argv);
 
     exit(whoami($argv));
-}
-
-/**
- * @return int UNIX status code
- */
-function whoami(array $argv)
-{
-    $my = posix_getpwuid(posix_geteuid());
-    if (empty($my) || !isset($my['name'])) {
-        return 1;
-    }
-
-    echo $my['name'], PHP_EOL;
-    return 0;
 }

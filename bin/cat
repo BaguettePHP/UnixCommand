@@ -1,6 +1,5 @@
 #!/usr/bin/env php
 <?php
-namespace zonuexe\UnixCommand;
 
 /**
  * CAT command
@@ -10,52 +9,13 @@ namespace zonuexe\UnixCommand;
  * @copyright 2015 USAMI Kenta
  */
 
+namespace zonuexe\UnixCommand;
+
+require_once __DIR__ . '/../functions.php';
+
 if (realpath($_SERVER['SCRIPT_FILENAME']) == realpath(__FILE__)) {
     $argv = isset($_SERVER['argv']) ? $_SERVER['argv'] : [];
     array_shift($argv);
 
     exit(cat($argv));
-}
-
-/**
- * @return int UNIX status code
- */
-function cat(array $argv)
-{
-    $files  = $argv ?: ['-'];
-    $failed = false;
-    $stdin  = null;
-
-    foreach ($files as $f) {
-        $file = null;
-        if ($f === '-') {
-            if ($stdin !== null) {
-                echo $stdin;
-                continue;
-            }
-
-            $file = STDIN;
-        } elseif (!is_file($f)) {
-            $failed = true;
-            fwrite(STDERR, "cat: ${f}: No such file or directory" . PHP_EOL);
-            continue;
-        } else {
-            $file = fopen($f, 'r');
-        }
-
-        while (!feof($file)) {
-            $data = fread($file, 8192);
-            if ($data === false) {
-                break;
-            }
-            if ($f === '-') {
-                $stdin .= $data;
-            }
-
-            echo $data;
-        }
-        fclose($file);
-    }
-
-    return $failed ? 1 : 0;
 }

@@ -1,7 +1,5 @@
 #!/usr/bin/env php
 <?php
-namespace zonuexe\UnixCommand;
-require_once dirname(__DIR__) . '/bootstrap.php';
 
 /**
  * CP command
@@ -11,80 +9,13 @@ require_once dirname(__DIR__) . '/bootstrap.php';
  * @copyright 2015 USAMI Kenta
  */
 
+namespace zonuexe\UnixCommand;
+
+require_once __DIR__ . '/../functions.php';
+
 if (realpath($_SERVER['SCRIPT_FILENAME']) == realpath(__FILE__)) {
     $argv = isset($_SERVER['argv']) ? $_SERVER['argv'] : [];
     array_shift($argv);
 
     exit(cp($argv));
-}
-
-/**
- * @return int UNIX status code
- */
-function cp(array $argv)
-{
-    $failed = false;
-
-    $len = count($argv);
-    if ($len === 0) {
-        fwrite(STDERR, 'cp: missing file operand' . PHP_EOL);
-        return 1;
-    }
-
-    $dest = array_pop($argv);
-    $is_dir = is_dir($dest);
-
-    if ($len === 1) {
-        $message = "cp: missing destination file operand after '{$dest}'";
-        fwrite(STDERR, $message . PHP_EOL);
-        return 1;
-    }
-
-    if (count($argv) > 1 && !$is_dir) {
-        $message = "cp: target '{$dest}' is not a directory";
-        fwrite(STDERR, $message . PHP_EOL);
-        return 1;
-    }
-
-    if ($is_dir) {
-        $pathinfo = pathinfo($dest);
-        $dest = $pathinfo['dirname'] . '/' . $pathinfo['basename'];
-    }
-
-    foreach ($argv as $f) {
-        if (is_dir($f)) {
-            $message = "cp: omitting directory '{$f}'";
-        } elseif (!is_file($f)) {
-            $message = "cp: cannot stat '{$f}': No such file or directory";
-        } elseif ($dest == $f) {
-            $message = "cp: '{$f}' and '{$f}' are the same file";
-        }
-
-        if ($is_dir) {
-            $new_file = $dest . '/' . basename($f);
-        } else {
-            $new_file = $dest;
-        }
-
-        if (!is_writable($dest)) {
-            $message = "cp: cannot create regular file '{$new_file}': Permission denied";
-        }
-
-        if (isset($message)) {
-            fwrite(STDERR, $message . PHP_EOL);
-            $failed = true;
-            continue;
-        }
-
-        try {
-            copy($f, $new_file);
-        } catch (\ErrorException $e) {
-            $message = preg_replace('@\Acopy@', 'cp', $e->getMessage());
-            fwrite(STDERR, $message . PHP_EOL);
-            $failed = true;
-            continue;
-        }
-    }
-
-    return $failed ? 1 : 0;
 }

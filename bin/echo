@@ -1,6 +1,5 @@
 #!/usr/bin/env php
 <?php
-namespace zonuexe\UnixCommand;
 
 /**
  * ECHO command
@@ -10,84 +9,13 @@ namespace zonuexe\UnixCommand;
  * @copyright 2015 USAMI Kenta
  */
 
+namespace zonuexe\UnixCommand;
+
+require_once __DIR__ . '/../functions.php';
+
 if (realpath($_SERVER['SCRIPT_FILENAME']) == realpath(__FILE__)) {
     $argv = isset($_SERVER['argv']) ? $_SERVER['argv'] : [];
     array_shift($argv);
 
     exit(_echo($argv));
-}
-
-/**
- * @return int UNIX status code
- */
-function _echo(array $argv)
-{
-    static $tr_table = [
-        '\\\\' => '\\',
-        '\a' => "\a",
-        '\b' => "\b",
-        '\c' => "\c",
-        '\d' => "\d",
-        '\e' => "\e",
-        '\f' => "\f",
-        '\g' => "\g",
-        '\h' => "\h",
-        '\i' => "\i",
-        '\j' => "\j",
-        '\k' => "\k",
-        '\l' => "\l",
-        '\m' => "\m",
-        '\n' => "\n",
-        '\o' => "\o",
-        '\p' => "\p",
-        '\q' => "\q",
-        '\r' => "\r",
-        '\s' => "\s",
-        '\t' => "\t",
-        '\u' => "\u",
-        '\v' => "\v",
-        '\w' => "\w",
-        '\x' => "\x",
-        '\y' => "\y",
-        '\z' => "\z",
-    ];
-
-    $last_newline = true;
-    $first = array_shift($argv);
-
-    if ($first === '-n') {
-        $last_newline = false;
-        $first = array_shift($argv);
-    }
-
-
-    $printline = function ($l) use ($tr_table) {
-        $terminate = false;
-        $line = strtr($l, $tr_table);
-        if (strpos($line, "\c") !== false) {
-            $terminate = true;
-            list($line, $_) = explode("\c", $line, 2);
-        }
-        echo $line;
-
-        return $terminate;
-    };
-
-    if ($printline($first)) {
-        return 0;
-    }
-
-    while ($argv) {
-        echo ' ';
-
-        if ($printline(array_shift($argv))) {
-            return 0;
-        }
-    }
-
-    if ($last_newline) {
-        echo PHP_EOL;
-    }
-
-    return 0;
 }

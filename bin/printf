@@ -1,6 +1,5 @@
 #!/usr/bin/env php
 <?php
-namespace zonuexe\UnixCommand;
 
 /**
  * PRINTF command
@@ -10,56 +9,13 @@ namespace zonuexe\UnixCommand;
  * @copyright 2015 USAMI Kenta
  */
 
+namespace zonuexe\UnixCommand;
+
+require_once __DIR__ . '/../functions.php';
+
 if (realpath($_SERVER['SCRIPT_FILENAME']) == realpath(__FILE__)) {
     $argv = isset($_SERVER['argv']) ? $_SERVER['argv'] : [];
     array_shift($argv);
 
     exit(printf($argv));
-}
-
-/**
- * @return int UNIX status code
- */
-function printf(array $argv)
-{
-    $format = array_shift($argv);
-
-    if ($format === null || strlen($format) < 1) {
-        fwrite(STDERR, 'printf: not enough arguments' . PHP_EOL);
-        return 1;
-    }
-
-    array_unshift($argv, strtr($format, [
-        '\\\\' => '\\',
-        '\a' => "\a",
-        '\b' => "\b",
-        '\c' => "\c",
-        '\d' => "\d",
-        '\e' => "\e",
-        '\f' => "\f",
-        '\g' => "\g",
-        '\h' => "\h",
-        '\i' => "\i",
-        '\j' => "\j",
-        '\k' => "\k",
-        '\l' => "\l",
-        '\m' => "\m",
-        '\n' => "\n",
-        '\o' => "\o",
-        '\p' => "\p",
-        '\q' => "\q",
-        '\r' => "\r",
-        '\s' => "\s",
-        '\t' => "\t",
-        '\u' => "\u",
-        '\v' => "\v",
-        '\w' => "\w",
-        '\x' => "\x",
-        '\y' => "\y",
-        '\z' => "\z",
-    ]));
-
-    call_user_func_array('\printf', $argv);
-
-    return 0;
 }
