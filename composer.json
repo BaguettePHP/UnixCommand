@@ -1,5 +1,5 @@
 {
-    "name": "Baguette/UnixCommand",
+    "name": "baguette/unix-command",
     "description": "UNIX-like commands implementation in PHP.",
     "type": "library",
     "license": "Apache-2.0",
